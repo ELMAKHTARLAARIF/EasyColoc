@@ -1,14 +1,18 @@
 <?php
 
 namespace App\Models;
+use App\Models\ColocMember;
+use App\Models\Category;
+use App\Models\Depense;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Colocation extends Model
 {
+    protected $fillable = ['name', 'description', 'address', 'capacite'];
     public function members()
     {
-        return $this->hasMany(Coloc_member::class);
+        return $this->hasMany(ColocMember::class);
     }
 
     public function categories()

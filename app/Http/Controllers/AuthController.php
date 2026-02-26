@@ -21,7 +21,7 @@ class AuthController extends Controller
         ]);
         if ($validatedData) {
             (new AuthService())->register($validatedData);
-            return redirect()->route('Member_dashboard');
+            return redirect()->route('home');
         }
     }
     public function CheckloginData(Request $request)

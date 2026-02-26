@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ColocMember extends Model
 {
+    protected $fillable = [ 'user_id', 'colocation_id', 'role', 'joined_at', 'leave_date', 'status'];
     public function user()
     {
         return $this->belongsTo(User::class);
