@@ -147,19 +147,21 @@
        SECTION 1 — HERO
   ═══════════════════════════════════ -->
     <section class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-5 pt-28 pb-16">
-        <div class="relative bcg-white/5 border border-white/10 rounded-xl p-4 mb-6 w-full max-w-md">
-            @if(session('success'))
-                <div class="mb-4 px-4 py-2 bg-green-100 text-green-800 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('invite_error'))
-                <div class="mb-4 px-4 py-2 bg-red-100 text-red-800 rounded">
-                    {{ session('invite_error') }}
-                </div>
-            @endif 
-            <span class="absolute top-2 right-2 text-red-500 cursor-pointer" onclick="this.parentElement.style.display='none'">X</span>
+        @if(session('success'))
+        <div class="relative mb-4 px-4 py-2 bg-green-100 text-green-800 rounded">
+            {{ session('success') }}
+            <span class="absolute top-0 right-0 text-red-500 cursor-pointer" onclick="this.parentElement.style.display='none'">X</span>
         </div>
+
+        @endif
+        @if(session('error'))
+        <div class="relative mb-4 px-4 py-2 bg-red-100 text-red-800 rounded">
+            {{ session('error') }}
+            <span class="absolute top-0 right-0 text-red-500 cursor-pointer" onclick="this.parentElement.style.display='none'">X</span>
+        </div>
+
+        @endif
+
         <!-- Eyebrow badge -->
         <div class="animate-fade-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium tracking-widest uppercase text-amber-glow border border-amber-glow/25 bg-amber-glow/10 mb-8">
             <span class="animate-pulse-dot w-1.5 h-1.5 rounded-full bg-amber-glow inline-block"></span>
@@ -249,7 +251,7 @@
                 <div class="group bg-surface hover:bg-[#1C1A15] transition-colors duration-200 p-8">
                     <div class="font-display font-bold text-5xl text-amber-glow/15 leading-none mb-5 tracking-[-0.05em]">01</div>
                     <span class="text-2xl block mb-3">👤</span>
-                    <div class="font-display font-bold text-lg text-[#F7F3EC] mb-2 tracking-tight">Créez votre compte</div>
+                    <div class="font-display font-bold text-lg text-[#F7F3EC] mb-2 tracking-tight"><a href="{{route('register')}}">Créez votre compte</a></div>
                     <p class="text-sm text-[rgba(247,243,236,0.4)] leading-relaxed mb-4">
                         Inscription en 30 secondes. Le premier inscrit sur la plateforme obtient automatiquement les droits d'admin global.
                     </p>

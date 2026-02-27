@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('invitations', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->timestamps('expires_at');
+            $table->timestamps(); 
+            $table->timestamp('expires_at')->nullable();
             $table->string('email');
             $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending');
             $table->foreignId('colocation_id')->constrained('colocations')->onDelete('cascade');

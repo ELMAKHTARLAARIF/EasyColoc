@@ -30,29 +30,26 @@ class AuthService
     }
     public function CheckloginData(array $credentials)
     {
-
-        if (Auth::attempt($credentials)) {
-            session()->regenerate();
-
-            $user = Auth::user();
-            if ($user->role->name === 'admin') {
-                return 'admin';
-            }
-            dd(get_class($user));
-            $colocMember = $user->coloc_members()->first();
-
-            if ($colocMember) {
-                if ($colocMember->role === 'owner')
-                    return 'owner';
-                if ($colocMember->role === 'member')
-                    return 'member';
-            }
-            else 
-                return 'user';
+        if (!Auth::attempt($credentials)) {
+            return null;
         }
 
-        return back()->withErrors([
-            'login_error' => 'The provided credentials do not match our records.'
-        ]);
+        session()->regenerate();
+
+        $user = Auth::user();
+
+        if ($user->role->name === 'admin') {
+            return 'admin';
+        }
+
+        $colocMember = ColocMember::where('user_id', $user->id)->first();
+
+        if ($colocMember) {
+            if ($colocMember->role === 'owner') 
+                return 'owner';
+            if ($colocMember->role === 'member') 
+                return 'member';
+        }
+        return 'user';
     }
 }

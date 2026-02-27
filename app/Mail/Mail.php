@@ -32,7 +32,7 @@ class Mail extends Mailable
     }
 
     public function content(): Content {
-        return new Content(view: 'emails.invitation', with: [
+        return new Content(view: 'Emails.invitation', with: [
             'invitation' => $this->invitation,
             'colocation' => $this->colocation,
         ]);
