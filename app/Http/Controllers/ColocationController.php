@@ -27,6 +27,7 @@ class ColocationController extends Controller
         if ($colocation) {
             return back()->with('error', 'Une colocation avec ce nom existe déjà.');
         }
+        
         if ($validatedData) {
             Colocation::create($validatedData);
             $user = Auth::user();

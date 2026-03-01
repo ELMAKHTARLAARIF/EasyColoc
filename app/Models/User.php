@@ -56,5 +56,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(ColocMember::class);
     }
+    public function depenses()
+    {
+        return $this->hasMany(Depense::class, 'payer_id');
+    }
+    public function invitations()
+    {
+        return $this->hasManyThrough(Invitation::class, ColocMember::class, 'user_id', 'colocation_id', 'id', 'colocation_id');
+    }
+    public function categories()
+    {
+        return $this->hasManyThrough(Category::class, ColocMember::class, 'user_id', 'colocation_id', 'id', 'colocation_id');
+    }
 
 }

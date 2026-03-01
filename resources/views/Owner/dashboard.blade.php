@@ -105,25 +105,12 @@
 
   <!-- ════════ SIDEBAR ════════ -->
 
-  @include('header.header', ['colocMember' => $colocMember])
+  @include('header.aside', ['colocMember' => $colocMember])
   <!-- ════════ MAIN ════════ -->
   <div class="ml-64 flex-1 flex flex-col min-h-screen">
 
     <!-- Topbar -->
-    <header class="bg-white border-b border-stone-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
-      <div>
-        <h1 class="font-display text-[1.4rem] font-semibold text-ink leading-tight">Welcome {{ Auth::user()->name }}</h1>
-        <p class="text-sm text-muted mt-0.5">{{$colocMember->colocation->name }} · Créée le {{ $colocMember->colocation->created_at->format('d M Y') }}</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <button
-          class="text-sm text-ink-light border border-stone-200 rounded-lg px-4 py-2 hover:border-amber hover:text-amber transition-all"
-          onclick="document.getElementById('inviteModal').classList.remove('hidden')">✉️ Inviter</button>
-        <button
-          class="text-sm bg-amber hover:bg-amber-dark text-white font-medium rounded-lg px-4 py-2 transition-all"
-          onclick="document.getElementById('expModal').classList.remove('hidden')">+ Dépense</button>
-      </div>
-    </header>
+@include('header.header', ['colocMember' => $colocMember])
 
     <!-- Content -->
     <main class="p-8 flex flex-col gap-6">
@@ -184,7 +171,7 @@
             <div class="w-9 h-9 rounded-lg bg-rose-light flex items-center justify-center text-base">⭐</div>
             <span class="text-[0.68rem] font-semibold bg-green-100 text-green-700 px-1.5 py-0.5 rounded">+1</span>
           </div>
-          <div class="font-display text-[2rem] text-ink leading-none">4.8</div>
+          <div class="font-display text-[2rem] text-ink leading-none">{{ Auth::user()->reputation }}</div>
           <div class="text-xs text-muted mt-1">Votre réputation</div>
         </div>
       </div>
@@ -241,7 +228,8 @@
               <button class="text-xs text-ink-light border border-stone-200 rounded-lg px-3 py-1.5 hover:border-amber hover:text-amber transition-all">Tout voir →</button>
             </div>
             <div class="divide-y divide-stone-100">
-              <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
+             @foreach($depenses as $depense)
+               <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
                 <div class="w-2 h-2 rounded-full bg-amber flex-shrink-0"></div>
                 <div class="flex-1 min-w-0">
                   <div class="text-sm font-medium text-ink">Courses Monoprix</div>
@@ -254,45 +242,7 @@
                 </div>
                 <button class="text-stone-300 hover:text-rose transition-colors text-sm leading-none">🗑</button>
               </div>
-              <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
-                <div class="w-2 h-2 rounded-full bg-teal flex-shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-sm font-medium text-ink">Facture EDF Février</div>
-                  <div class="text-[0.68rem] text-muted mt-0.5">Énergie · 15 fév</div>
-                </div>
-                <div class="text-sm font-semibold text-ink whitespace-nowrap">94,00 €</div>
-                <div class="flex items-center gap-1.5 bg-sand rounded-full px-2.5 py-1 text-[0.68rem] text-ink-light whitespace-nowrap">
-                  <div class="w-3.5 h-3.5 rounded-full bg-teal flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">L</div>
-                  Lucas
-                </div>
-                <button class="text-stone-300 hover:text-rose transition-colors text-sm leading-none">🗑</button>
-              </div>
-              <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
-                <div class="w-2 h-2 rounded-full bg-violet flex-shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-sm font-medium text-ink">Produits ménagers</div>
-                  <div class="text-[0.68rem] text-muted mt-0.5">Entretien · 12 fév</div>
-                </div>
-                <div class="text-sm font-semibold text-ink whitespace-nowrap">23,50 €</div>
-                <div class="flex items-center gap-1.5 bg-sand rounded-full px-2.5 py-1 text-[0.68rem] text-ink-light whitespace-nowrap">
-                  <div class="w-3.5 h-3.5 rounded-full bg-rose flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">A</div>
-                  Aïcha
-                </div>
-                <button class="text-stone-300 hover:text-rose transition-colors text-sm leading-none">🗑</button>
-              </div>
-              <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
-                <div class="w-2 h-2 rounded-full bg-amber flex-shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-sm font-medium text-ink">Loyer commun (charges)</div>
-                  <div class="text-[0.68rem] text-muted mt-0.5">Logement · 1 fév</div>
-                </div>
-                <div class="text-sm font-semibold text-ink whitespace-nowrap">120,00 €</div>
-                <div class="flex items-center gap-1.5 bg-sand rounded-full px-2.5 py-1 text-[0.68rem] text-ink-light whitespace-nowrap">
-                  <div class="w-3.5 h-3.5 rounded-full bg-amber flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">M</div>
-                  Marie
-                </div>
-                <button class="text-stone-300 hover:text-rose transition-colors text-sm leading-none">🗑</button>
-              </div>
+              @endforeach
             </div>
           </div>
 
@@ -342,33 +292,28 @@
           <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
             <div class="flex items-center justify-between px-5 py-4 border-b border-stone-100">
               <span class="text-sm font-semibold text-ink">Invitations en attente</span>
-              <span class="text-[0.65rem] font-bold bg-amber-light text-amber border border-amber-border px-2 py-0.5 rounded-full">2</span>
+              <span class="text-[0.65rem] font-bold bg-amber-light text-amber border border-amber-border px-2 py-0.5 rounded-full">{{ $invitations->count() }}</span>
             </div>
             <div class="divide-y divide-stone-100">
               <div class="flex items-center justify-between px-5 py-3.5">
+
+                @foreach($invitations as $invitation)
                 <div>
-                  <div class="text-sm font-medium text-ink">sophie.r@exemple.fr</div>
-                  <div class="text-[0.68rem] text-muted mt-0.5">Envoyée il y a 2j · expire dans 5j</div>
+                  <div class="text-sm font-medium text-ink">{{ $invitation->email }}</div>
+                  <div class="text-[0.68rem] text-muted mt-0.5">Envoyée il y a {{ $invitation->created_at->diffForHumans() }}</div>
                 </div>
+
                 <div class="flex items-center gap-2">
                   <span class="text-[0.65rem] bg-amber-light text-amber border border-amber-border px-2 py-0.5 rounded-full">En attente</span>
                   <button onclick="this.closest('.flex.items-center.justify-between').remove()" class="text-xs text-muted border border-stone-200 rounded-md px-2 py-1 hover:border-rose hover:text-rose transition-all">✕</button>
                 </div>
-              </div>
-              <div class="flex items-center justify-between px-5 py-3.5">
-                <div>
-                  <div class="text-sm font-medium text-ink">pierre.l@exemple.fr</div>
-                  <div class="text-[0.68rem] text-muted mt-0.5">Envoyée il y a 4j · expire dans 3j</div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[0.65rem] bg-amber-light text-amber border border-amber-border px-2 py-0.5 rounded-full">En attente</span>
-                  <button onclick="this.closest('.flex.items-center.justify-between').remove()" class="text-xs text-muted border border-stone-200 rounded-md px-2 py-1 hover:border-rose hover:text-rose transition-all">✕</button>
-                </div>
+                @endforeach
               </div>
             </div>
           </div>
 
           <!-- Danger zone -->
+          @if($colocMember->role === 'owner')
           <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
             <div class="px-5 py-4 border-b border-stone-100">
               <span class="text-sm font-semibold text-rose">⚠️ Zone Owner</span>
@@ -388,12 +333,12 @@
               </form>
             </div>
           </div>
+          @endif
 
         </div>
         <!-- END RIGHT -->
 
       </div>
-      <!-- END MAIN GRID -->
 
     </main>
 
@@ -457,55 +402,54 @@
           <button onclick="document.getElementById('expModal').classList.add('hidden')" class="text-stone-300 hover:text-muted text-xl">✕</button>
         </div>
         <div class="p-6 flex flex-col gap-4">
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Titre</label>
-            <input type="text" placeholder="Courses, EDF…"
-              class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
-          </div>
-          <div class="grid grid-cols-2 gap-3">
+          <form action="{{ route('create_depense') }}" method="POST">
+            @csrf
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Montant €</label>
-              <input type="number" placeholder="0.00" step="0.01"
+              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Titre</label>
+              <input type="text" placeholder="Courses, EDF…" name="name"
                 class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
             </div>
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Date</label>
-              <input type="date" value="2025-02-25"
-                class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Montant €</label>
+                <input type="number" placeholder="0.00" step="0.01" name="amount"
+                  class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Date</label>
+                <input type="date" name="date" value="2025-02-25"
+                  class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+              </div>
             </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Catégorie</label>
-              <select class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
-                <option>Alimentation</option>
-                <option>Énergie</option>
-                <option>Entretien</option>
-                <option>Logement</option>
-                <option>Autre</option>
-              </select>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Catégorie</label>
+                <input type="text" name="category" placeholder="Alimentation, Logement…"
+                  class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+                </input>
+              </div>
+              <input type="hidden" name="colocation_id" value="{{ $colocMember->colocation->id }}">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Payé par</label>
+                <select name="payer_id" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+                  @foreach($ColocMembers as $member)
+                  <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Payé par</label>
-              <select class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
-                <option>Marie (moi)</option>
-                <option>Lucas</option>
-                <option>Aïcha</option>
-                <option>Tom</option>
-              </select>
+            <div class="flex gap-3 pt-1">
+              <button onclick="document.getElementById('expModal').classList.add('hidden')"
+                class="flex-1 py-2.5 rounded-xl border border-stone-200 text-sm text-muted hover:border-stone-300 transition-all">
+                Annuler
+              </button>
+              <button onclick="document.getElementById('expModal').classList.add('hidden')"
+                class="flex-1 py-2.5 rounded-xl bg-amber hover:bg-amber-dark text-white text-sm font-semibold transition-all">
+                Ajouter
+              </button>
             </div>
-          </div>
-          <div class="flex gap-3 pt-1">
-            <button onclick="document.getElementById('expModal').classList.add('hidden')"
-              class="flex-1 py-2.5 rounded-xl border border-stone-200 text-sm text-muted hover:border-stone-300 transition-all">
-              Annuler
-            </button>
-            <button onclick="document.getElementById('expModal').classList.add('hidden')"
-              class="flex-1 py-2.5 rounded-xl bg-amber hover:bg-amber-dark text-white text-sm font-semibold transition-all">
-              Ajouter
-            </button>
-          </div>
         </div>
+        </form>
       </div>
     </div>
 

@@ -31,7 +31,6 @@ class AuthController extends Controller
         ]);
 
         $person = (new AuthService())->CheckloginData($credentials);
-
         switch ($person) {
             case 'admin':
                 return redirect()->route('admin_dashboard');
@@ -41,6 +40,8 @@ class AuthController extends Controller
                 return redirect()->route('Owner_dashboard');
             case 'user':
                 return redirect()->route('home');
+            case 'true':
+                return redirect()->route('Owner_dashboard');
             default:
                 return back()->withErrors([
                     'login_error' => 'The provided credentials do not match our records.'

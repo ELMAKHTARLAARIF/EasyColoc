@@ -19,6 +19,8 @@ class OwnerController extends Controller
         }
 
         $ColocMembers = ColocMember::with('user')->where('colocation_id', $colocMember->colocation_id)->get();
-        return View('Owner.dashboard',compact('colocMember','ColocMembers'));
+        $invitations = $colocMember->colocation->invitations()->where('status', 'pending')->get();
+        $depenses = $colocMember->colocation->depenses()->with('category', 'payer')->limit(5)->get();
+        return View('Owner.dashboard',compact('colocMember','ColocMembers', 'invitations', 'depenses'));
     }
 }

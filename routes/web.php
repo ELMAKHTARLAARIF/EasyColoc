@@ -36,3 +36,5 @@ Route::delete('colocation/{id}', [ColocationController::class, 'colocations_dest
 Route::post('colocation/{id}/invite', [ColocMemberController::class, 'invite'])->name('colocations_invite');
 Route::get('accept_invitation/{token}',[ColocMemberController::class, 'acceptInvitation']
 )->name('accept_invitation');
+Route::post('depense/create',[DepenseController::class,'create'])->name('create_depense');
+Route::get('depenses',[DepenseController::class,'show'])->name('depenses');

@@ -50,6 +50,8 @@ class AuthService
             if ($colocMember->role === 'member') 
                 return 'member';
         }
+        if($user->status==='Not Baned')
+            return true;
         return 'user';
     }
 }
