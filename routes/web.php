@@ -38,6 +38,8 @@ Route::middleware('Member')->group(function () {
     )->name('accept_invitation');
     Route::post('depense/create', [DepenseController::class, 'create'])->name('create_depense');
     Route::get('depenses', [DepenseController::class, 'show'])->name('depenses');
+Route::put('depenses/{id}/edit', [DepenseController::class, 'update'])->name('expenses_edit');
+    Route::get('depenses/{id}/delete', [DepenseController::class, 'destroy'])->name('expenses_delete');
 });
 Route::get('/', function () {
     return view('Auth.login');

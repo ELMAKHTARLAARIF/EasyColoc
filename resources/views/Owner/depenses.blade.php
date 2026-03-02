@@ -115,7 +115,16 @@
   <div class="ml-64 flex-1 flex flex-col min-h-screen">
     @include('header.header', ['colocMember' => $colocMember])
     <main class="p-8 flex flex-col gap-6">
-
+    @if(session('success'))
+        <div class="bg-green-100 text-green-700 px-4 py-2 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="bg-red-100 text-red-700 px-4 py-2 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
       <div class="grid grid-cols-4 gap-4">
         <div class="animate-fade-up delay-1 bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
           <div class="flex items-center justify-between mb-4">
@@ -276,8 +285,8 @@
         <button onclick="document.getElementById('editModal').classList.add('hidden')"
           class="text-stone-300 hover:text-muted text-xl">✕</button>
       </div>
-      <form class="p-6 flex flex-col gap-4" method="POST" action="#"> {{-- action="{{ route('expenses.update', $expense) }}" --}}
-        {{-- @csrf @method('PUT') --}}
+      <form class="p-6 flex flex-col gap-4" method="POST" action="{{ route('expenses_edit', ['id' => $depense->id]) }}">
+         @csrf @method('PUT')
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Titre <span class="text-amber">*</span></label>
           <input type="text" name="title" id="edit-title"
@@ -296,32 +305,28 @@
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Catégorie</label>
-            <select name="category" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
-              <option>Alimentation</option>
-              <option>Énergie</option>
-              <option>Entretien</option>
-              <option>Logement</option>
-              <option>Autre</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Payé par</label>
-            <select name="paid_by" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
-              <option>Marie (moi)</option>
-              <option>Lucas</option>
-              <option>Aïcha</option>
-              <option>Tom</option>
-            </select>
-          </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Catégorie</label>
+                <input type="text" name="category" placeholder="Alimentation, Logement…" value="{{ $depense->category->name }}"
+                  class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+                </input>
+              </div>
+              <input type="hidden" name="colocation_id" value="{{ $colocMember->colocation->id }}">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">Payé par</label>
+                <select name="payer_id" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-ink transition-all">
+                  @foreach($members as $member)
+                  <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
+                  @endforeach
+                </select>
+              </div>
         </div>
         <div class="flex gap-3 pt-1">
           <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
             class="flex-1 py-2.5 rounded-xl border border-stone-200 text-sm text-muted hover:border-stone-300 transition-all">
             Annuler
           </button>
-          <button type="submit"
+          <a href=""></a><button type="submit"
             class="flex-1 py-2.5 rounded-xl bg-amber hover:bg-amber-dark text-white text-sm font-semibold transition-all">
             Sauvegarder
           </button>
@@ -331,69 +336,6 @@
   </div>
 
   <script>
-    function filterExpenses() {
-      const search = document.getElementById('search-input').value.toLowerCase();
-      const month = document.getElementById('filter-month').value.toLowerCase();
-      const cat = document.getElementById('filter-cat').value;
-      const member = document.getElementById('filter-member').value;
-
-      const rows = document.querySelectorAll('.expense-row');
-      let visible = 0,
-        total = 0;
-
-      rows.forEach(row => {
-        const name = row.dataset.name || '';
-        const rCat = row.dataset.cat || '';
-        const rMem = row.dataset.member || '';
-        const rDate = row.dataset.date || '';
-        const amount = parseFloat(row.dataset.amount || 0);
-
-        const matchSearch = !search || name.includes(search);
-        const matchMonth = !month || rDate.includes(month);
-        const matchCat = !cat || rCat === cat;
-        const matchMember = !member || rMem === member;
-
-        const show = matchSearch && matchMonth && matchCat && matchMember;
-        row.classList.toggle('hidden', !show);
-        if (show) {
-          visible++;
-          total += amount;
-        }
-      });
-
-      // Empty state
-      document.getElementById('empty-state').classList.toggle('hidden', visible > 0);
-
-      // Update counters
-      document.getElementById('visible-count').textContent = visible;
-      document.getElementById('footer-count').textContent = visible;
-      document.getElementById('visible-total').textContent = total.toFixed(2).replace('.', ',') + ' €';
-      document.getElementById('footer-total').textContent = total.toFixed(2).replace('.', ',') + ' €';
-
-      // Active filter badge
-      const activeFilters = [search, month, cat, member].filter(Boolean).length;
-      const badge = document.getElementById('filter-count');
-      if (activeFilters > 0) {
-        badge.textContent = activeFilters + ' filtre' + (activeFilters > 1 ? 's' : '');
-        badge.classList.remove('hidden');
-      } else {
-        badge.classList.add('hidden');
-      }
-    }
-
-    function resetFilters() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('filter-month').value = '';
-      document.getElementById('filter-cat').value = '';
-      document.getElementById('filter-member').value = '';
-      filterExpenses();
-    }
-
-    function deleteRow(btn) {
-      if (!confirm('Supprimer cette dépense ?')) return;
-      btn.closest('.expense-row').remove();
-      filterExpenses();
-    }
 
     function openEdit(btn) {
       const row = btn.closest('.expense-row');

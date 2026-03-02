@@ -43,11 +43,12 @@ class AuthService
         }
 
         $colocMember = ColocMember::where('user_id', $user->id)->first();
-
         if ($colocMember) {
-            if ($colocMember->role === 'owner' && $user->status==='Not Baned') 
+            if ($colocMember->role === 'owner' || $colocMember->role === 'member' && $user->status === 'Not Baned'){
                 return 'member';
+            }
         }
         return 'user';
+
     }
 }

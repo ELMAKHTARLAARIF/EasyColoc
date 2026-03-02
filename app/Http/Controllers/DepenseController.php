@@ -51,4 +51,32 @@ class DepenseController extends Controller
 
         return redirect()->route('Owner_dashboard')->with('success', 'Dépense ajoutée avec succès.');
     }
+    public function update($id)
+    {
+        $depense = Depense::findOrFail($id);
+        $validatedData = request()->validate([
+            'title' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'category' => 'required|string|max:255',
+        ]);
+        $depense->name = $validatedData['title'];
+        $depense->amount = $validatedData['amount'];
+        $category = Category::firstOrCreate([
+            'name' => $validatedData['category'],
+            'colocation_id' => $depense->colocation_id,
+        ]);
+        $depense->category_id = $category->id;
+        $depense->save();
+        return redirect()->route('depenses')->with('success', 'Dépense mise à jour avec succès.');  
+    }
+    public function destroy($id)
+    {
+        $depense = Depense::findOrFail($id);
+        $colocMember = ColocMember::where('user_id', Auth::id())->first();
+        if (!$colocMember || $colocMember->colocation_id !== $depense->colocation_id) {
+            return redirect()->route('home')->with('error', 'You are not authorized to delete this expense.');
+        }
+        $depense->delete();
+        return redirect()->route('depenses')->with('success', 'Dépense supprimée avec succès.');
+    }
 }

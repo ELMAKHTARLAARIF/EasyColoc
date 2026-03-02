@@ -153,7 +153,7 @@
             <div class="w-9 h-9 rounded-lg bg-teal-light flex items-center justify-center text-base">⚖️</div>
             <span class="text-[0.68rem] font-semibold bg-red-100 text-red-700 px-1.5 py-0.5 rounded">3 dettes</span>
           </div>
-          <div class="font-display text-[2rem] text-ink leading-none">+47 €</div>
+          <div class="font-display text-[2rem] text-ink leading-none">{{ $colocMember->solde }} €</div>
           <div class="text-xs text-muted mt-1">Votre solde net</div>
         </div>
         <div class="animate-fade-up delay-3 bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
@@ -202,7 +202,7 @@
                   <div class="text-[0.68rem] text-amber mt-0.5">★★★★★ · Rejoint le {{ $member->created_at->format('d/m/Y') }}</div>
                 </div>
                 <div class="text-right mr-3">
-                  <div class="text-sm font-semibold text-teal">+47,00 €</div>
+                  <div class="text-sm font-semibold text-teal">{{ $member->solde }} €</div>
                   <div class="text-[0.62rem] text-muted">solde</div>
                 </div>
                 @if($member->user_id !== Auth::id() && $member->role !== 'owner')
