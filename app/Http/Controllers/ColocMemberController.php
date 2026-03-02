@@ -56,7 +56,7 @@ class ColocMemberController extends Controller
             return redirect()->route('home')->with('error', 'Colocation not found for this invitation.');
         }
         if(ColocMember::where('user_id', $user->id)->where('colocation_id', $colocation->id)->exists()){
-            return redirect()->route('home')->with('error', 'You are already a member of this colocation.');
+            return redirect()->route('Owner_dashboard')->with('error', 'You are already a member of this colocation.');
         }
 
         ColocMember::create([
@@ -70,5 +70,48 @@ class ColocMemberController extends Controller
         $invitation->save();
 
         return redirect()->route('login')->with('success', "You have successfully joined the colocation {$colocation->name}.");
+    }
+
+    public function join(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|uuid',
+        ]);
+
+        $token = $request->input('token');
+        $invitation = Invitation::where('token', $token)->first();
+
+        if (!$invitation) {
+            return redirect()->route('home')->with('error', 'Invalid invitation token.');
+        }
+
+        if ($invitation->isExpired()) {
+            return redirect()->route('home')->with('error', 'This invitation has expired.');
+        }
+
+        $user = User::where('email', $invitation->email)->first();
+        if (!$user) {
+            return redirect()->route('home')->with('error', 'Please register first.');
+        }
+
+        $colocation = Colocation::find($invitation->colocation_id);
+        if (!$colocation) {
+            return redirect()->route('home')->with('error', 'Colocation not found for this invitation.');
+        }
+        if(ColocMember::where('user_id', $user->id)->where('colocation_id', $colocation->id)->exists()){
+            return redirect()->route('Owner_dashboard')->with('error', 'You are already a member of this colocation.');
+        }
+
+        ColocMember::create([
+            'user_id' => $user->id,
+            'colocation_id' => $colocation->id,
+            'role' => 'member',
+            'joined_at' => now(),
+        ]);
+
+        $invitation->status = 'accepted';
+        $invitation->save();
+
+        return redirect()->route('Owner_dashboard')->with('success', "You have successfully joined the colocation {$colocation->name}.");
     }
 }

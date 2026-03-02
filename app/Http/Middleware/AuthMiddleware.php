@@ -1,11 +1,14 @@
 <?php
-
+namespace App\Http\Middleware;
+use Closure;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 class AuthMiddleware
 {
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check()) {
-            return redirect('/login');
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to access this page.');
         }
 
         return $next($request);

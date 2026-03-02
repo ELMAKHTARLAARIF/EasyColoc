@@ -34,13 +34,11 @@ class AuthController extends Controller
         switch ($person) {
             case 'admin':
                 return redirect()->route('admin_dashboard');
-            case 'owner':
-                return redirect()->route('Owner_dashboard');
             case 'member':
                 return redirect()->route('Owner_dashboard');
             case 'user':
                 return redirect()->route('home');
-            case 'true':
+            case false:
                 return redirect()->route('Owner_dashboard');
             default:
                 return back()->withErrors([
