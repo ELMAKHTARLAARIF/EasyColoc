@@ -27,4 +27,15 @@ class Colocation extends Model
     {
         return $this->hasMany(Invitation::class);
     }
+    public function payments()
+{
+    return $this->hasManyThrough(
+        Payment::class,
+        Depense::class,
+        'colocation_id', 
+        'depense_id',   
+        'id',            
+        'id'            
+    );
+}
 }

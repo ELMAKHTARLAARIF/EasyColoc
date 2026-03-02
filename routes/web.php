@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\OwnerController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Mail;
 
 Route::middleware('auth')->group(function () {
@@ -40,6 +41,7 @@ Route::middleware('Member')->group(function () {
     Route::get('depenses', [DepenseController::class, 'show'])->name('depenses');
 Route::put('depenses/{id}/edit', [DepenseController::class, 'update'])->name('expenses_edit');
     Route::get('depenses/{id}/delete', [DepenseController::class, 'destroy'])->name('expenses_delete');
+    Route::post('depenses/{id}/markAsPaid', [PaymentController::class, 'markAsPaid'])->name('depense_markAsPaid');
 });
 Route::get('/', function () {
     return view('Auth.login');

@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\ColocMember;
 use App\Models\Depense;
 use App\Models\User;
+use App\Models\Payment;
 
 class DepenseController extends Controller
 {
@@ -21,8 +22,10 @@ class DepenseController extends Controller
         $members = ColocMember::with('User')->where('colocation_id',$colocMember->colocation_id)->get();
         $depenses = $colocMember->colocation->depenses()->with('category', 'payer')->get();
         $toalDepenses = $depenses->sum('amount');
+        $categorys = Category::where('colocation_id', $colocMember->colocation_id)->get();
 
-        return view('Owner.depenses', compact('depenses', 'toalDepenses','members'));
+
+        return view('Owner.depenses', compact('depenses', 'toalDepenses','members', 'categorys'));
     }
     public function create(Request $request)
     {
@@ -48,7 +51,16 @@ class DepenseController extends Controller
             'created_at' => $validatedData['date'],
             'colocation_id' => $validatedData['colocation_id'],
         ]);
-
+        $membersCount = ColocMember::where('colocation_id', $validatedData['colocation_id'])->count();
+        foreach (ColocMember::where('colocation_id', $validatedData['colocation_id'])->get() as $member) {
+            Payment::create([
+                'amount' => $validatedData['amount'] / $membersCount,
+                'status' => 'unpaid',
+                'depense_id' => Depense::latest()->first()->id,
+                'payed_id' => $member->user_id,
+                'created_at' => now(),
+            ]);
+        }
         return redirect()->route('Owner_dashboard')->with('success', 'Dépense ajoutée avec succès.');
     }
     public function update($id)

@@ -69,5 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Category::class, ColocMember::class, 'user_id', 'colocation_id', 'id', 'colocation_id');
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 
 }

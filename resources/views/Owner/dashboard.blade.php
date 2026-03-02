@@ -103,16 +103,13 @@
 
 <body class="bg-cream text-ink flex min-h-screen">
 
-  <!-- ════════ SIDEBAR ════════ -->
 
   @include('header.aside', ['colocMember' => $colocMember])
   <!-- ════════ MAIN ════════ -->
   <div class="ml-64 flex-1 flex flex-col min-h-screen">
 
-    <!-- Topbar -->
-@include('header.header', ['colocMember' => $colocMember])
+    @include('header.header', ['colocMember' => $colocMember])
 
-    <!-- Content -->
     <main class="p-8 flex flex-col gap-6">
       @if(session('success'))
       <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -134,7 +131,7 @@
         </div>
         <div class="ml-auto flex gap-2.5 z-10 flex-shrink-0">
           <button class="text-sm px-4 py-2 rounded-lg bg-white/15 border border-white/30 text-white hover:bg-white/25 transition-all">Gérer les membres</button>
-          <button class="text-sm px-4 py-2 rounded-lg bg-white text-amber-dark font-semibold hover:bg-amber-light transition-all">Voir les dépenses</button>
+          <a href="{{ route('depenses') }}" class="text-sm px-4 py-2 rounded-lg bg-white text-amber-dark font-semibold hover:bg-amber-light transition-all">Voir les dépenses</a>
         </div>
       </div>
 
@@ -224,30 +221,54 @@
           <!-- ② Expenses -->
           <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
             <div class="flex items-center justify-between px-5 py-4 border-b border-stone-100">
-              <span class="text-sm font-semibold text-ink">Dernières dépenses</span>
+              <span class="text-sm font-semibold text-ink">Dépenses non payées</span>
               <button class="text-xs text-ink-light border border-stone-200 rounded-lg px-3 py-1.5 hover:border-amber hover:text-amber transition-all">Tout voir →</button>
             </div>
             <div class="divide-y divide-stone-100">
-             @foreach($depenses as $depense)
-               <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
+              @if(
+              $colocMember->colocation
+              ->payments()
+              ->where('status', 'unpaid')
+              ->where('payed_id', Auth::id())
+              ->count() == 0
+              )
+              <div class="px-5 py-3.5 text-center text-sm text-muted">
+                Aucune dépense non payée
+              </div>
+              @else
+              @foreach($depenses as $depense)
+              <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-cream transition-colors">
                 <div class="w-2 h-2 rounded-full bg-amber flex-shrink-0"></div>
                 <div class="flex-1 min-w-0">
-                  <div class="text-sm font-medium text-ink">Courses Monoprix</div>
-                  <div class="text-[0.68rem] text-muted mt-0.5">Alimentation · 18 fév</div>
+                  <div class="text-sm font-medium text-ink">{{ $depense->name }}</div>
+                  <div class="text-[0.68rem] text-muted mt-0.5">{{ $depense->category->name }} · {{ $depense->created_at->format('d M') }}</div>
                 </div>
-                <div class="text-sm font-semibold text-ink whitespace-nowrap">86,40 €</div>
+                <div class="text-sm font-semibold text-ink whitespace-nowrap">{{ number_format($depense->amount, 2, ',', ' ') }} €</div>
                 <div class="flex items-center gap-1.5 bg-sand rounded-full px-2.5 py-1 text-[0.68rem] text-ink-light whitespace-nowrap">
                   <div class="w-3.5 h-3.5 rounded-full bg-amber flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">M</div>
-                  Marie
+                  {{ $depense->payer->name }}
                 </div>
-                <button class="text-stone-300 hover:text-rose transition-colors text-sm leading-none">🗑</button>
+                <div>
+                  @if($depense->payments()->where('payed_id', Auth::id())->where('status', 'unpaid')->exists())
+                  <form action="{{ route('depense_markAsPaid', $depense->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="text-[0.65rem] bg-red-100 text-red-700 border border-red-300 px-2 py-0.5 rounded-full">
+                      non payé
+                    </button>
+                  </form>
+                  @else
+                  <span class="text-[0.65rem] bg-green-100 text-green-700 border border-green-300 px-2 py-0.5 rounded-full">Payé</span>
+                  @endif
+                </div>
+                <!-- <a href="" onclick="return confirm('Supprimer cette dépense ?')" class="text-stone-300 hover:text-rose transition-colors text-sm leading-none"></a> -->
               </div>
               @endforeach
             </div>
+            @endif
           </div>
-
         </div>
 
+        @if($colocMember->is_owner)
         <div class="flex flex-col gap-5">
 
           <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
@@ -271,22 +292,9 @@
                   <div class="text-[0.68rem] text-muted">Retirer, promouvoir</div>
                 </div>
               </a>
-              <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-cream border border-stone-200 hover:bg-amber-light hover:border-amber-border transition-all">
-                <div class="w-8 h-8 rounded-lg bg-violet-light flex items-center justify-center text-base flex-shrink-0">🏷️</div>
-                <div>
-                  <div class="text-sm font-medium text-ink">Gérer les catégories</div>
-                  <div class="text-[0.68rem] text-muted">Créer, modifier, supprimer</div>
-                </div>
-              </a>
-              <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-cream border border-stone-200 hover:bg-amber-light hover:border-amber-border transition-all">
-                <div class="w-8 h-8 rounded-lg bg-rose-light flex items-center justify-center text-base flex-shrink-0">⚖️</div>
-                <div>
-                  <div class="text-sm font-medium text-ink">Voir les remboursements</div>
-                  <div class="text-[0.68rem] text-muted">Qui doit à qui</div>
-                </div>
-              </a>
             </div>
           </div>
+
 
           <!-- Pending invitations -->
           <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
@@ -311,7 +319,7 @@
               </div>
             </div>
           </div>
-
+          @endif
           <!-- Danger zone -->
           @if($colocMember->role === 'owner')
           <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">

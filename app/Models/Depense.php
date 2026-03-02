@@ -26,4 +26,8 @@ class Depense extends Model
     {
         return $this->belongsTo(User::class, 'payer_id');
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

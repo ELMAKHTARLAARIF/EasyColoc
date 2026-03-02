@@ -20,29 +20,6 @@
       <a href="{{ route('depenses') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
         <span class="w-4 text-center">💶</span> Dépenses
       </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
-        <span class="w-4 text-center">⚖️</span> Balances
-      </a>
-
-      <div class="text-[0.6rem] uppercase tracking-[0.12em] text-white/25 px-3 pt-4 pb-1">Gestion Owner</div>
-
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
-        <span class="w-4 text-center">👥</span> Membres
-        <span class="ml-auto text-[0.62rem] font-semibold bg-amber/30 text-amber-200 px-1.5 py-0.5 rounded-full">4</span>
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
-        <span class="w-4 text-center">✉️</span> Invitations
-        <span class="ml-auto text-[0.62rem] font-semibold bg-amber/30 text-amber-200 px-1.5 py-0.5 rounded-full">2</span>
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
-        <span class="w-4 text-center">🏷️</span> Catégories
-      </a>
-
-      <div class="text-[0.6rem] uppercase tracking-[0.12em] text-white/25 px-3 pt-4 pb-1">Compte</div>
-
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
-        <span class="w-4 text-center">👤</span> Mon profil
-      </a>
       <a href="{{ route('logout') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-white/50 text-sm hover:bg-white/[0.06] hover:text-white/85 transition-all">
         <span class="w-4 text-center"> 🚪</span> Log Out
       </a>

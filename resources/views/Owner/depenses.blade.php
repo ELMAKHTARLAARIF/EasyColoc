@@ -125,40 +125,7 @@
             {{ session('error') }}
         </div>
     @endif
-      <div class="grid grid-cols-4 gap-4">
-        <div class="animate-fade-up delay-1 bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-9 h-9 rounded-lg bg-amber-light flex items-center justify-center">💶</div>
-            <span class="text-[0.68rem] font-semibold bg-green-100 text-green-700 px-1.5 py-0.5 rounded">Ce mois</span>
-          </div>
-          <div class="font-display text-[2rem] text-ink leading-none">324 €</div>
-          <div class="text-xs text-muted mt-1">Total dépenses</div>
-        </div>
-        <div class="animate-fade-up delay-2 bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-9 h-9 rounded-lg bg-teal-light flex items-center justify-center">👤</div>
-            <span class="text-[0.68rem] font-semibold bg-stone-100 text-muted px-1.5 py-0.5 rounded">par membre</span>
-          </div>
-          <div class="font-display text-[2rem] text-ink leading-none">81 €</div>
-          <div class="text-xs text-muted mt-1">Quote-part moyenne</div>
-        </div>
-        <div class="animate-fade-up delay-3 bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-9 h-9 rounded-lg bg-violet-light flex items-center justify-center">📋</div>
-            <span class="text-[0.68rem] font-semibold bg-stone-100 text-muted px-1.5 py-0.5 rounded">total</span>
-          </div>
-          <div class="font-display text-[2rem] text-ink leading-none">12</div>
-          <div class="text-xs text-muted mt-1">Dépenses ce mois</div>
-        </div>
-        <div class="animate-fade-up delay-4 bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-9 h-9 rounded-lg bg-rose-light flex items-center justify-center">⚖️</div>
-            <span class="text-[0.68rem] font-semibold text-teal bg-teal-light px-1.5 py-0.5 rounded">+47 €</span>
-          </div>
-          <div class="font-display text-[2rem] text-teal leading-none">+47 €</div>
-          <div class="text-xs text-muted mt-1">Votre solde net</div>
-        </div>
-      </div>
+
 
       <!-- Filters + Table -->
       <div class="animate-fade-up bg-white border border-stone-200 rounded-xl overflow-hidden">
@@ -169,20 +136,27 @@
           <select id="filter-month" onchange="filterExpenses()"
             class="text-xs border border-stone-200 rounded-lg px-3 py-1.5 bg-stone-50 text-ink-light transition-all">
             <option value="">Tous les mois</option>
-            <option value="fév" selected>Février 2025</option>
-            <option value="jan">Janvier 2025</option>
-            <option value="déc">Décembre 2024</option>
+            <option value="jan">Janvier</option>
+            <option value="feb">Février</option>
+            <option value="mar">Mars</option>
+            <option value="apr">Avril</option>
+            <option value="may">Mai</option>
+            <option value="jun">Juin</option>
+            <option value="jul">Juillet</option>
+            <option value="aug">Août</option>
+            <option value="sep">Septembre</option>
+            <option value="oct">Octobre</option>
+            <option value="nov">Novembre</option>
+            <option value="dec">Décembre</option>
           </select>
 
           <!-- Category filter -->
           <select id="filter-cat" onchange="filterExpenses()"
             class="text-xs border border-stone-200 rounded-lg px-3 py-1.5 bg-stone-50 text-ink-light transition-all">
             <option value="">Toutes catégories</option>
-            <option value="Alimentation">🛒 Alimentation</option>
-            <option value="Énergie">⚡ Énergie</option>
-            <option value="Entretien">🧹 Entretien</option>
-            <option value="Logement">🏠 Logement</option>
-            <option value="Autre">📦 Autre</option>
+            @foreach($categorys as $category)
+            <option value="{{$category->name}}">{{$category->name}}</option>
+            @endforeach
           </select>
 
           <!-- Member filter -->
@@ -204,8 +178,8 @@
 
           <!-- Total filtered -->
           <div class="text-xs text-muted">
-            <span id="visible-count">12</span> dépenses ·
-            <span id="visible-total" class="font-semibold text-ink">324,00 €</span>
+            <span id="visible-count">{{ $depenses->count() }}</span> dépenses ·
+            <span id="visible-total" class="font-semibold text-ink">{{ number_format($depenses->sum('amount'), 2, ',', ' ') }} €</span>
           </div>
         </div>
 
@@ -215,6 +189,7 @@
           <div>Dépense</div>
           <div>Catégorie</div>
           <div>Payé par</div>
+          <div>Votre part</div>
           <div class="text-right">Montant</div>
           <div></div>
         </div>
@@ -224,12 +199,12 @@
 
 
           @foreach($depenses as $depense)
-          <div class="expense-row grid grid-cols-[auto_1fr_130px_120px_120px_44px] gap-3 items-center px-5 py-3.5 hover:bg-cream transition-colors"
+          <div class="expense-row h-20 grid grid-cols-[auto_1fr_130px_120px_120px_44px] gap-3 items-center px-5 py-3.5 hover:bg-cream transition-colors"
             data-name="{{ $depense->name }}" data-cat="{{ $depense->category->name }}" data-member="{{ $depense->payer->name }}" data-date="fév" data-amount="{{ $depense->amount }}">
             <div class="w-2 h-2 rounded-full bg-amber flex-shrink-0"></div>
             <div>
               <div class="text-sm font-medium text-ink">{{ $depense->name }}</div>
-              <div class="text-[0.68rem] text-muted mt-0.5">18 fév 2025</div>
+              <div class="text-[0.68rem] text-muted mt-0.5">{{ $depense->created_at->format('d M Y') }}</div>
             </div>
             <div>
               <span class="inline-flex items-center gap-1 text-[0.68rem] bg-amber-light text-amber-dark border border-amber-border px-2 py-0.5 rounded-full">
@@ -237,17 +212,23 @@
               </span>
             </div>
             <div class="flex items-center gap-1.5">
-              <div class="w-5 h-5 rounded-full bg-amber flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">M</div>
+              <div class="w-3 h-5 rounded-full bg-amber flex items-center justify-center text-white text-[0.5rem] font-bold flex-shrink-0">M</div>
               <span class="text-xs text-ink-light">{{ $depense->payer->name }}</span>
             </div>
+            <div class="text-xs text-muted">
+              @php
+              $payment = $depense->payments()->where('payed_id', $colocMember->user_id)->first();
+              @endphp
+              {{  $payment ? number_format($payment->amount, 2, ',', ' ') : '0,00' }} €
+            </div>
             <div class="text-sm font-semibold text-ink text-right">{{ number_format($depense->amount, 2, ',', ' ') }} €</div>
+            @if($depense->colocation_id === $colocMember->colocation->id && $colocMember->role === 'owner')
             <div class="flex items-center justify-end gap-1">
               <button onclick="openEdit(this)" class="w-7 h-7 rounded-lg hover:bg-stone-100 flex items-center justify-center text-muted hover:text-ink transition-all text-xs">✎</button>
-              <button onclick="deleteRow(this)" class="w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-stone-300 hover:text-rose transition-all text-xs">🗑</button>
+              <a href="{{ route('expenses_delete', ['id' => $depense->id]) }}" class="w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-stone-300 hover:text-rose transition-all text-xs">🗑</a>
             </div>
+            @endif
           </div>
-
-
           @endforeach
           <div id="empty-state" class="hidden px-5 py-12 text-center">
             <div class="text-3xl mb-3">🔍</div>

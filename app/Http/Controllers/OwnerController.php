@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Colocation;
-use Illuminate\Http\Request;
 use App\Models\ColocMember;
-use App\Models\User;
+use App\Models\Depense;
 use Illuminate\Support\Facades\Auth;
 
 class OwnerController extends Controller
@@ -20,7 +18,17 @@ class OwnerController extends Controller
 
         $ColocMembers = ColocMember::with('user')->where('colocation_id', $colocMember->colocation_id)->get();
         $invitations = $colocMember->colocation->invitations()->where('status', 'pending')->get();
-        $depenses = $colocMember->colocation->depenses()->with('category', 'payer')->limit(5)->get();
-        return View('Owner.dashboard',compact('colocMember','ColocMembers', 'invitations', 'depenses'));
+        
+        // Get only unpaid expenses for the current user
+        $depenses = Depense::where('colocation_id', $colocMember->colocation_id)
+            ->with(['category', 'payer', 'payments'])
+            ->whereHas('payments', function($query) use ($user) {
+                $query->where('payed_id', $user->id)
+                      ->where('status', 'unpaid');
+            })
+            ->limit(5)
+            ->get();
+        
+        return View('Owner.dashboard',compact('colocMember','ColocMembers', 'invitations', 'depenses',));
     }
 }

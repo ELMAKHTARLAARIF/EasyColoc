@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         if (Auth::check()) {
             $colocMember = ColocMember::where('user_id', Auth::id())->first();
             $view->with('colocMember', $colocMember);
+
         }
     });
 }
