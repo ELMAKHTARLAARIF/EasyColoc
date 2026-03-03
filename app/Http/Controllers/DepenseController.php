@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreDepenseRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateDepenseRequest;
 use App\Models\Category;
 use App\Models\ColocMember;
 use App\Models\Depense;
@@ -27,16 +29,9 @@ class DepenseController extends Controller
 
         return view('Owner.depenses', compact('depenses', 'toalDepenses','members', 'categorys'));
     }
-    public function create(Request $request)
+    public function create(StoreDepenseRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'payer_id' => 'required|integer',
-            'colocation_id' => 'required|integer',
-            'category' => 'required|string|max:255',
-            'date' => 'required|date',
-        ]);
+        $validatedData = $request->validated(); 
 
         $category = Category::firstOrCreate([
             'name' => $validatedData['category'],
@@ -63,14 +58,10 @@ class DepenseController extends Controller
         }
         return redirect()->route('Owner_dashboard')->with('success', 'Dépense ajoutée avec succès.');
     }
-    public function update($id)
+    public function update(UpdateDepenseRequest $request, $id)
     {
         $depense = Depense::findOrFail($id);
-        $validatedData = request()->validate([
-            'title' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'category' => 'required|string|max:255',
-        ]);
+        $validatedData = $request->validated(); 
         $depense->name = $validatedData['title'];
         $depense->amount = $validatedData['amount'];
         $category = Category::firstOrCreate([

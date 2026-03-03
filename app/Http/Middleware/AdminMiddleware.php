@@ -6,8 +6,10 @@ class AdminMiddleware
 {
     public function handle($request, Closure $next)
     {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page.');
+        $user = Auth::user();
+        if (!$user || $user->role->name !== 'admin') {
+            return redirect()->route('home')
+                ->with('error', 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page.');
         }
         return $next($request);
     }

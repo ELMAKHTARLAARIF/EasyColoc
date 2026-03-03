@@ -190,15 +190,14 @@
           <div>Catégorie</div>
           <div>Payé par</div>
           <div>Votre part</div>
-          <div class="text-right">Montant</div>
+          <div>Status</div>
           <div></div>
         </div>
 
         <!-- Expense rows -->
         <div id="expenses-list" class="divide-y divide-stone-100">
 
-
-          @foreach($depenses as $depense)
+          @foreach($depenses ?? [] as $depense)
           <div class="expense-row h-20 grid grid-cols-[auto_1fr_130px_120px_120px_44px] gap-3 items-center px-5 py-3.5 hover:bg-cream transition-colors"
             data-name="{{ $depense->name }}" data-cat="{{ $depense->category->name }}" data-member="{{ $depense->payer->name }}" data-date="fév" data-amount="{{ $depense->amount }}">
             <div class="w-2 h-2 rounded-full bg-amber flex-shrink-0"></div>
@@ -221,7 +220,8 @@
               @endphp
               {{  $payment ? number_format($payment->amount, 2, ',', ' ') : '0,00' }} €
             </div>
-            <div class="text-sm font-semibold text-ink text-right">{{ number_format($depense->amount, 2, ',', ' ') }} €</div>
+            <div class="text-xs text-muted">{{ $payment ? $payment->status : '—' }}</div>
+            
             @if($depense->colocation_id === $colocMember->colocation->id && $colocMember->role === 'owner')
             <div class="flex items-center justify-end gap-1">
               <button onclick="openEdit(this)" class="w-7 h-7 rounded-lg hover:bg-stone-100 flex items-center justify-center text-muted hover:text-ink transition-all text-xs">✎</button>

@@ -7,7 +7,10 @@ use App\Models\ColocMember;
 use App\Models\Category;
 use App\Models\Depense;
 use App\Models\User;
+use App\Http\Requests\StoreColocationRequest;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\HttpCache\Store;
+
 class ColocationController extends Controller
 {
 
@@ -16,13 +19,9 @@ class ColocationController extends Controller
         $colocation->delete();
         return redirect()->route('home')->with('success', 'Colocation annulée avec succès.');
     }
-    public function create(Request $request){
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'address' => 'nullable|string|max:255',
-            'capacite' => 'nullable|integer',
-        ]);
+    public function create(StoreColocationRequest $request)
+    {
+        $validatedData = $request->validated(); 
         $colocation = Colocation::where('name', $validatedData['name'])->first();
         if ($colocation) {
             return back()->with('error', 'Une colocation avec ce nom existe déjà.');

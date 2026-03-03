@@ -17,9 +17,10 @@ class AuthService
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role_id' => $role->id
+            'role_id' => $role->id,
+            'status' => 'Not Baned',
+            'reputation' => 0,
         ]);
-
         if ($user) {
             Auth::login($user);
         } else {

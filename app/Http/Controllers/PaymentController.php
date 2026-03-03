@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ColocMember;
 use App\Models\Depense;
 use Illuminate\Http\Request;
 use App\Models\Payment;
@@ -25,6 +26,20 @@ class PaymentController extends Controller
         $payment->update([
             'status' => 'paid'
         ]);
+
+        $payer = ColocMember::where('user_id', Auth::id())->first();
+
+        if ($payer) {
+            $payer->solde -= $payment->amount;
+            $payer->save();
+        }
+
+        $creator = ColocMember::where('user_id', $payment->depense->payer_id)->first();
+
+        if ($creator) {
+            $creator->solde += $payment->amount;
+            $creator->save();
+        }
 
         return redirect()
             ->route('Owner_dashboard')

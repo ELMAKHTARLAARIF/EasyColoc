@@ -11,6 +11,8 @@ use App\Http\Controllers\OwnerController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\AdminController;
+
 
 Route::middleware('auth')->group(function () {
     Route::get('home', function () {
@@ -28,7 +30,6 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('Member')->group(function () {
 
-    Route::post('user/store', [AuthController::class, 'store_user'])->name('store_user');
 
     Route::get('Owner/dashboard', [OwnerController::class, 'showOwnerDashboard'])->name('Owner_dashboard');
     Route::delete('colocation/{id}', [ColocationController::class, 'colocations_destroy'])->name('colocations_destroy');
@@ -39,17 +40,26 @@ Route::middleware('Member')->group(function () {
     )->name('accept_invitation');
     Route::post('depense/create', [DepenseController::class, 'create'])->name('create_depense');
     Route::get('depenses', [DepenseController::class, 'show'])->name('depenses');
-Route::put('depenses/{id}/edit', [DepenseController::class, 'update'])->name('expenses_edit');
+    Route::put('depenses/{id}/edit', [DepenseController::class, 'update'])->name('expenses_edit');
     Route::get('depenses/{id}/delete', [DepenseController::class, 'destroy'])->name('expenses_delete');
     Route::post('depenses/{id}/markAsPaid', [PaymentController::class, 'markAsPaid'])->name('depense_markAsPaid');
 });
+Route::post('login', [AuthController::class, 'CheckloginData'])->name('CheckloginData');
+Route::post('user/store', [AuthController::class, 'store_user'])->name('store_user');
 Route::get('/', function () {
     return view('Auth.login');
 })->name('login');
-Route::post('login', [AuthController::class, 'CheckloginData'])->name('CheckloginData');
 Route::get('register', function () {
     return view('Auth.Register');
 })->name('register');
 Route::get('Join', function () {
     return view('Home.FromJoin');
 })->name('join');
+
+Route::get('Admin/dashboard',[AdminController::class,'show'])->name('Admin_dashboard');
+
+Route::middleware(['auth', 'Admin'])->group(function () {
+    Route::post('user/{user}/bani', [AdminController::class, 'user_ban'])->name('user_ban');
+    Route::delete('user/{user}/debani', [AdminController::class, 'user_debanir'])->name('user_debanir');
+    
+});

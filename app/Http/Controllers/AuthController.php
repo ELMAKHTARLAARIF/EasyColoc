@@ -33,7 +33,7 @@ class AuthController extends Controller
         $person = (new AuthService())->CheckloginData($credentials);
         switch ($person) {
             case 'admin':
-                return redirect()->route('admin_dashboard');
+                return redirect()->route('Admin_dashboard');
             case 'member':
                 return redirect()->route('Owner_dashboard');
             case 'user':
